@@ -403,7 +403,7 @@ class _InputFieldFormState extends State<InputFieldForm> {
                                 value = '${e.label}: - ';
                               } else {
                                 value =
-                                    '${e.label}: ${NumberFormat("#,##0.00").format(double.parse(currentValue.toString()))} ';
+                                    '${e.label}: ${NumberFormat.decimalPatternDigits(locale: 'en_US', decimalDigits: 2).format(double.parse(currentValue.toString()))} ';
                               }
                             } else {
                               value = '${e.label}: ${currentValue ?? '-'} ';

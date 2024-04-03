@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
-class InputFieldNumber extends StatelessWidget {
+class InputFieldNumber extends StatefulWidget {
   final TextEditingController controller;
   final String label;
   final bool isRequired;
@@ -32,6 +32,22 @@ class InputFieldNumber extends StatelessWidget {
     required this.input,
     required this.isCurrency,
   });
+
+  @override
+  State<InputFieldNumber> createState() => _InputFieldNumberState();
+}
+
+class _InputFieldNumberState extends State<InputFieldNumber> {
+  late String? _currencyValue;
+
+  @override
+  void initState() {
+    _currencyValue = widget.controller.text != ''
+        ? NumberFormat.decimalPatternDigits(locale: 'en_US', decimalDigits: 2)
+            .format(double.parse(widget.controller.text))
+        : '';
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,51 +88,58 @@ class InputFieldNumber extends StatelessWidget {
       ),
     ];
 
-    double? prevValue =
-        controller.text == '' ? null : double.parse(controller.text);
+    double? prevValue = widget.controller.text == ''
+        ? null
+        : double.parse(widget.controller.text);
 
     return TextFormField(
-      controller: controller,
-      readOnly: !(isEditable ?? true),
+      controller: widget.controller,
+      readOnly: !(widget.isEditable ?? true),
       autovalidateMode: AutovalidateMode.onUserInteraction,
       keyboardType:
           const TextInputType.numberWithOptions(signed: true, decimal: true),
-      inputFormatters: (inputFieldNumberMode ?? InputNumberMode.integer) ==
-              InputNumberMode.integer
-          ? integerFormatter
-          : decimalFormatter,
+      inputFormatters:
+          (widget.inputFieldNumberMode ?? InputNumberMode.integer) ==
+                  InputNumberMode.integer
+              ? integerFormatter
+              : decimalFormatter,
       textInputAction: TextInputAction.next,
       onEditingComplete: () => FocusScope.of(context).nextFocus(),
       decoration: InputDecoration(
-        labelText: label + (isRequired ? '' : ' - Optional'),
-        helperText: isCurrency
-            ? controller.text != ''
-                ? NumberFormat.decimalPatternDigits(
-                        locale: 'en_US', decimalDigits: 2)
-                    .format(double.parse(controller.text))
-                : helperText
-            : helperText,
+        labelText: widget.label + (widget.isRequired ? '' : ' - Optional'),
+        helperText: widget.isCurrency
+            ? _currencyValue != ''
+                ? '$_currencyValue ${widget.helperText ?? ''}'
+                : widget.helperText
+            : widget.helperText,
         helperMaxLines: 100,
         suffixIcon: const Icon(Icons.numbers),
       ),
       onChanged: (value) {
+        setState(() {
+          _currencyValue = value != ''
+              ? NumberFormat.decimalPatternDigits(
+                      locale: 'en_US', decimalDigits: 2)
+                  .format(double.parse(value))
+              : '';
+        });
         double? currentValue = value == '' ? null : double.parse(value);
-        if (onValueChanged != null) {
-          onValueChanged!.call(context, prevValue, currentValue);
+        if (widget.onValueChanged != null) {
+          widget.onValueChanged!.call(context, prevValue, currentValue);
         }
         prevValue = currentValue;
       },
       validator: (value) {
         validation() {
-          if (isRequired && (value == null || value.isEmpty)) {
+          if (widget.isRequired && (value == null || value.isEmpty)) {
             return 'Required';
           }
           return null;
         }
 
         String? errorMessage = validation.call();
-        if (onValidating != null) {
-          return onValidating!.call(errorMessage);
+        if (widget.onValidating != null) {
+          return widget.onValidating!.call(errorMessage);
         }
         return errorMessage;
       },
