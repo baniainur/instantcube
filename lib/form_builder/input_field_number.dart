@@ -91,7 +91,9 @@ class InputFieldNumber extends StatelessWidget {
         labelText: label + (isRequired ? '' : ' - Optional'),
         helperText: isCurrency
             ? controller.text != ''
-                ? NumberFormat("#.##0,00").format(double.parse(controller.text))
+                ? NumberFormat.decimalPatternDigits(
+                        locale: 'en_US', decimalDigits: 2)
+                    .format(double.parse(controller.text))
                 : helperText
             : helperText,
         helperMaxLines: 100,

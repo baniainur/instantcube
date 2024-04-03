@@ -1,3 +1,3 @@
-## 0.0.3
+## 0.0.4
 
-* Thousand Separator on InputNumber
+* Bugs fix Thousand Separator on InputNumber
