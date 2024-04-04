@@ -54,116 +54,107 @@ class _MyAppState extends State<MyApp> {
           padding: const EdgeInsets.all(15),
           child: FormBuilder(
             formName: 'Member',
-            inputFields: const [
-              InputText(
-                name: 'name',
-                label: 'Name',
+            inputFields: [
+              InputOption(
+                name: 'productInventory',
+                label: 'Product Inventory',
+                isMultiSelection: true,
+                optionData: Future<OptionData>(() async {
+                  return const OptionData(
+                    displayedListOfOptions: [
+                      OptionItem(
+                        hiddenValue: [100],
+                        value: ['A Per Strip'],
+                      ),
+                      OptionItem(
+                        hiddenValue: [200],
+                        value: ['B Per Strip'],
+                      ),
+                    ],
+                    totalOption: 2,
+                  );
+                }),
               ),
               InputForm(
-                name: 'detailProduct',
-                label: 'Detail Product',
+                name: 'quantity',
+                label: 'Quantity',
+                isMultiInputForm: true,
+                isEditable: true,
+                isItemCanAddedOeRemoved: false,
                 inputFields: [
-                  InputNumber(
+                  const InputText(
+                    name: 'productName',
+                    label: 'ProductName',
+                    isEditable: false,
+                  ),
+                  const InputNumber(
                     name: 'quantity',
                     label: 'Quantity',
                   ),
-                  InputText(
-                    name: 'unit',
-                    label: 'Unit',
+                  const InputNumber(
+                    name: 'sellingPricePerUnit',
+                    label: 'Selling Price Per Unit',
+                    isEditable: false,
+                    isCurrency: true,
                   ),
+                  const InputNumber(
+                    name: 'sellingPriceTotal',
+                    label: 'Selling Price Total',
+                    isEditable: false,
+                    isCurrency: true,
+                  ),
+                ],
+                onFormValueChanged:
+                    (context, input, previousValue, currentValue, inputValues) {
+                  if (input.name == 'quantity') {
+                    double quantity = currentValue ?? 0;
+                    double sellingPricePerUnit =
+                        inputValues['sellingPricePerUnit']!.getNumber() ?? 0;
+                    inputValues['sellingPriceTotal']!
+                        .setNumber(quantity * sellingPricePerUnit);
+                  }
+                },
+              ),
+              const InputForm(
+                name: 'payament',
+                label: 'Payment',
+                inputFields: [
                   InputNumber(
-                    name: 'purchasePrice',
-                    label: 'Purchase Price',
+                    name: 'mustPay',
+                    label: 'Must Pay',
+                    isEditable: false,
                     isCurrency: true,
                   ),
                   InputNumber(
-                    name: 'sellingPrice',
-                    label: 'Selling Price',
+                    name: 'moneyReceived',
+                    label: 'Money Received',
+                    isCurrency: true,
                   ),
                   InputNumber(
-                    name: 'tax',
-                    label: 'Tax',
-                  ),
-                ],
-              ),
-              InputForm(
-                name: 'unitConversion',
-                label: 'Unit Conversion',
-                isMultiInputForm: true,
-                isOptional: true,
-                inputFields: [
-                  InputNumber(
-                    name: 'quantity',
-                    label: 'Quantity',
-                  ),
-                  InputText(
-                    name: 'unit',
-                    label: 'Unit',
-                  ),
-                ],
-              ),
-              InputForm(
-                name: 'priceConversion',
-                label: 'Price Conversion',
-                isMultiInputForm: true,
-                isOptional: true,
-                inputFields: [
-                  InputText(
-                    name: 'unit',
-                    label: 'Unit',
+                    name: 'changeMoney',
+                    label: 'Change Money',
                     isEditable: false,
-                  ),
-                  InputNumber(
-                    name: 'purchasePricePerUnit',
-                    label: 'Purchase Price Per Unit',
-                  ),
-                  InputNumber(
-                    name: 'sellingPricePerUnit',
-                    label: 'Selling Price Per Unit',
-                  ),
-                  InputNumber(
-                    name: 'taxPerUnit',
-                    label: 'Tax Per Unit',
+                    isCurrency: true,
                   ),
                 ],
               ),
             ],
-            onInitial: (context, inputValues) async {
-              inputValues['name']!.setString('A');
-              inputValues['detailProduct']!.setFormValues([
-                {
-                  'unit': 'Karton',
-                  'quantity': 1,
-                  'purchasePrice': 100000,
-                  'sellingPrice': 200000,
-                  'tax': 20000,
-                },
-              ]);
-              await Future.delayed(const Duration(seconds: 2));
-              List<Map<String, dynamic>> unitConversion = [];
-              List<Map<String, dynamic>> priceConversion = [];
-              unitConversion.add({
-                'quantity': 1,
-                'unit': 'Karton',
-              });
-              priceConversion.add({
-                'unit': 'Karton',
-                'purchasePricePerUnit': 100000,
-                'sellingPricePerUnit': 200000,
-                'taxPerUnit': 200000,
-              });
-              inputValues['unitConversion']!.setFormValues(unitConversion);
-              inputValues['priceConversion']!.setFormValues(priceConversion);
-            },
-            onBeforeValidation: (context, inputValues) {
-              inputValues['name']!
-                  .setString(inputValues['name']!.getString()?.toUpperCase());
-            },
-            onAfterValidation: (context, inputValues, isValid, errorMessages) {
-              if (inputValues['rate']!.getNumber() != null &&
-                  inputValues['rateInfo']!.getString() == null) {
-                errorMessages['rateInfo'] =
-                    'Must be filled because rate is filled';
+            onValueChanged:
+                (context, input, previousValue, currentValue, inputValues) {
+              if (input.name == 'productInventory') {
+                var productInventoryValues = (currentValue as List<OptionItem>);
+                List<Map<String, dynamic>> quantityValues = [];
+                for (var productInventoryValue in productInventoryValues) {
+                  quantityValues.add({
+                    'productName': productInventoryValue.value.first,
+                    'quantity': 0,
+                    'sellingPricePerUnit':
+                        productInventoryValue.hiddenValue.first,
+                    'sellingPriceTotal':
+                        productInventoryValue.hiddenValue.first * 0,
+                  });
+                }
+                inputValues['quantity']!.setFormValues(quantityValues);
               }
             },
             onSubmit: (context, inputValues) {

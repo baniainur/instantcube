@@ -92,6 +92,16 @@ class _InputFieldNumberState extends State<InputFieldNumber> {
         ? null
         : double.parse(widget.controller.text);
 
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        _currencyValue = widget.controller.text != ''
+            ? NumberFormat.decimalPatternDigits(
+                    locale: 'en_US', decimalDigits: 2)
+                .format(double.parse(widget.controller.text))
+            : '';
+      });
+    });
+
     return TextFormField(
       controller: widget.controller,
       readOnly: !(widget.isEditable ?? true),

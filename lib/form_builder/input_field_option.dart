@@ -42,7 +42,6 @@ class InputFieldOption extends StatefulWidget {
 
 class _InputFieldOptionState extends State<InputFieldOption> {
   bool _textFieldIsFocused = false;
-  final TextEditingController _controller = TextEditingController();
 
   late bool _isMultiSelection;
 
@@ -55,17 +54,11 @@ class _InputFieldOptionState extends State<InputFieldOption> {
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _controller.text = widget.controller.getData().isEmpty
-          ? ''
-          : '${widget.controller.getData().length} Option Selected';
-    });
-
     return Column(
       children: [
         Focus(
           child: TextFormField(
-            controller: _controller,
+            controller: widget.controller.getSummary(),
             autovalidateMode: AutovalidateMode.onUserInteraction,
             maxLines: null,
             decoration: InputDecoration(
@@ -603,9 +596,11 @@ class _InputFieldOptionSearchResultPage
 
 class InputFieldOptionController extends ChangeNotifier {
   List<OptionItem> _data = [];
+  final TextEditingController _controller = TextEditingController();
 
   void add(OptionItem item) {
     _data.add(item);
+    _controller.text = '${_data.length} Data Selected';
     notifyListeners();
   }
 
@@ -613,8 +608,13 @@ class InputFieldOptionController extends ChangeNotifier {
     return _data;
   }
 
+  TextEditingController getSummary() {
+    return _controller;
+  }
+
   void clear() {
     _data = [];
+    _controller.clear();
     notifyListeners();
   }
 }

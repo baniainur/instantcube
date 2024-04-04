@@ -354,8 +354,12 @@ class _FormBuilderState extends State<FormBuilder> {
           }
           return (errorMessage ?? '') + additionalErrorMessage;
         },
-        isEditable:
-            _isEditable ?? widget.isFormEditable ?? e.isEditable ?? true,
+        isEditable: _isEditable ??
+            (widget.isFormEditable == null
+                ? (e.isEditable ?? true)
+                : (widget.isFormEditable == true
+                    ? (e.isEditable ?? true)
+                    : false)),
         onValueChanged: (context, previousValue, currentValue) {
           if (widget.onValueChanged != null) {
             widget.onValueChanged!
@@ -389,12 +393,18 @@ class _FormBuilderState extends State<FormBuilder> {
           }
           return (errorMessage ?? '') + additionalErrorMessage;
         },
-        isEditable:
-            _isEditable ?? widget.isFormEditable ?? e.isEditable ?? true,
+        isEditable: _isEditable ??
+            (widget.isFormEditable == null
+                ? (e.isEditable ?? true)
+                : (widget.isFormEditable == true
+                    ? (e.isEditable ?? true)
+                    : false)),
         onValueChanged: (context, previousValue, currentValue) {
           if (widget.onValueChanged != null) {
-            widget.onValueChanged!
-                .call(context, e, previousValue, currentValue, _inputValues);
+            setState(() {
+              widget.onValueChanged!
+                  .call(context, e, previousValue, currentValue, _inputValues);
+            });
           }
         },
         input: e,
@@ -429,12 +439,18 @@ class _FormBuilderState extends State<FormBuilder> {
           }
           return (errorMessage ?? '') + additionalErrorMessage;
         },
-        isEditable:
-            _isEditable ?? widget.isFormEditable ?? e.isEditable ?? true,
+        isEditable: _isEditable ??
+            (widget.isFormEditable == null
+                ? (e.isEditable ?? true)
+                : (widget.isFormEditable == true
+                    ? (e.isEditable ?? true)
+                    : false)),
         onValueChanged: (context, previousValue, currentValue) {
           if (widget.onValueChanged != null) {
-            widget.onValueChanged!
-                .call(context, e, previousValue, currentValue, _inputValues);
+            setState(() {
+              widget.onValueChanged!
+                  .call(context, e, previousValue, currentValue, _inputValues);
+            });
           }
         },
         input: e,
@@ -465,8 +481,12 @@ class _FormBuilderState extends State<FormBuilder> {
           }
           return (errorMessage ?? '') + additionalErrorMessage;
         },
-        isEditable:
-            _isEditable ?? widget.isFormEditable ?? e.isEditable ?? true,
+        isEditable: _isEditable ??
+            (widget.isFormEditable == null
+                ? (e.isEditable ?? true)
+                : (widget.isFormEditable == true
+                    ? (e.isEditable ?? true)
+                    : false)),
         onValueChanged: (context, previousValue, currentValue) {
           if (widget.onValueChanged != null) {
             setState(() {
@@ -501,8 +521,12 @@ class _FormBuilderState extends State<FormBuilder> {
           }
           return (errorMessage ?? '') + additionalErrorMessage;
         },
-        isEditable:
-            _isEditable ?? widget.isFormEditable ?? e.isEditable ?? true,
+        isEditable: _isEditable ??
+            (widget.isFormEditable == null
+                ? (e.isEditable ?? true)
+                : (widget.isFormEditable == true
+                    ? (e.isEditable ?? true)
+                    : false)),
         inputFields: e.inputFields,
         additionalButtons: e.additionalButtons,
         onAfterValidation: e.onAfterValidation,
@@ -544,8 +568,12 @@ class _FormBuilderState extends State<FormBuilder> {
           }
           return (errorMessage ?? '') + additionalErrorMessage;
         },
-        isEditable:
-            _isEditable ?? widget.isFormEditable ?? e.isEditable ?? true,
+        isEditable: _isEditable ??
+            (widget.isFormEditable == null
+                ? (e.isEditable ?? true)
+                : (widget.isFormEditable == true
+                    ? (e.isEditable ?? true)
+                    : false)),
         isMultiSelection: e.isAllowMultiple ?? false,
         fileType: e.fileType ?? FileType.any,
         onDownload: e.onDownload,
