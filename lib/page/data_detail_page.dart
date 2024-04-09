@@ -8,8 +8,10 @@ class DataDetailPage extends StatefulWidget {
   final String subtitle;
   final dynamic id;
   final List<Input> inputFields;
-  final dynamic Function(dynamic id, Map<String, InputValue> inputValues) save;
-  final dynamic Function(BuildContext context, dynamic id) delete;
+  final Future<IsUpdated> Function(
+          BuildContext context, dynamic id, Map<String, InputValue> inputValues)
+      save;
+  final Future<IsDeleted> Function(BuildContext context, dynamic id) delete;
   final Function(BuildContext context, Map<String, InputValue> inputValues)?
       onInitial;
   final dynamic Function(
@@ -119,43 +121,51 @@ class _DataDetailPageState extends State<DataDetailPage> {
                       if (result == 'Yes') {
                         if (!context.mounted) return;
 
-                        await widget.delete.call(context, widget.id);
+                        var isDeleted =
+                            await widget.delete.call(context, widget.id);
 
                         if (!context.mounted) return;
 
-                        Navigator.pop(context, true);
+                        if (isDeleted == IsDeleted.yes) {
+                          Navigator.pop(context, true);
+                        }
                       }
                     },
                   ),
                 ] +
                 (widget.additionalButtons ?? []),
             onSubmit: (context, inputValues) async {
-              await widget.save.call(widget.id, inputValues);
+              var isUpdated =
+                  await widget.save.call(context, widget.id, inputValues);
 
               if (!context.mounted) return;
 
-              await showDialog<String>(
-                context: context,
-                barrierDismissible: false,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    icon: const Icon(Icons.info),
-                    title: const Text('Data successfully saved.'),
-                    actions: <Widget>[
-                      TextButton(
-                        child: const Text('Ok'),
-                        onPressed: () {
-                          Navigator.of(context).pop('Ok');
-                        },
-                      ),
-                    ],
-                  );
-                },
-              );
+              if (isUpdated == IsUpdated.yes) {
+                await showDialog<String>(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      icon: const Icon(Icons.info),
+                      title: const Text('Data successfully saved.'),
+                      actions: <Widget>[
+                        TextButton(
+                          child: const Text('Ok'),
+                          onPressed: () {
+                            Navigator.of(context).pop('Ok');
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                );
 
-              if (!context.mounted) return;
+                if (!context.mounted) return;
 
-              Navigator.pop(context, true);
+                Navigator.pop(context, true);
+              } else {
+                Navigator.pop(context, true);
+              }
             },
             submitButtonSettings: const SubmitButtonSettings(
               label: 'Save',
@@ -167,3 +177,7 @@ class _DataDetailPageState extends State<DataDetailPage> {
     );
   }
 }
+
+enum IsDeleted { yes, no }
+
+enum IsUpdated { yes, no }
