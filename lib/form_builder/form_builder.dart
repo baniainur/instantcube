@@ -13,20 +13,6 @@ import 'input_field_option.dart';
 import 'input_field_text.dart';
 
 class FormBuilder extends StatefulWidget {
-  const FormBuilder(
-      {super.key,
-      this.formName,
-      required this.inputFields,
-      this.onInitial,
-      this.onBeforeValidation,
-      this.onAfterValidation,
-      required this.onSubmit,
-      this.submitButtonSettings,
-      this.additionalButtons,
-      this.isFormEditable,
-      this.onValueChanged,
-      this.resetToInitialAfterSubmit = false});
-
   final String? formName;
   final List<Input> inputFields;
   final dynamic Function(
@@ -51,6 +37,24 @@ class FormBuilder extends StatefulWidget {
       dynamic currentValue,
       Map<String, InputValue> inputValues)? onValueChanged;
   final bool? resetToInitialAfterSubmit;
+  final bool? isSubmitButtonEnable;
+  final bool? isAddtionalButtonButtonEnable;
+
+  const FormBuilder(
+      {super.key,
+      this.formName,
+      required this.inputFields,
+      this.onInitial,
+      this.onBeforeValidation,
+      this.onAfterValidation,
+      required this.onSubmit,
+      this.submitButtonSettings,
+      this.additionalButtons,
+      this.isFormEditable,
+      this.onValueChanged,
+      this.resetToInitialAfterSubmit = false,
+      this.isSubmitButtonEnable = true,
+      this.isAddtionalButtonButtonEnable = true});
 
   @override
   State<FormBuilder> createState() => _FormBuilderState();
@@ -125,8 +129,9 @@ class _FormBuilderState extends State<FormBuilder> {
     for (var i = 0; i < _isSubmittings.length; i++) {
       if (i == _isSubmittings.length - 1) {
         listAdditionalButtons.add(FilledButton.icon(
-          onPressed:
-              _isSubmittings.where((element) => element == true).isNotEmpty
+          onPressed: widget.isSubmitButtonEnable! == false
+              ? null
+              : _isSubmittings.where((element) => element == true).isNotEmpty
                   ? null
                   : () async {
                       setState(() {
@@ -156,20 +161,26 @@ class _FormBuilderState extends State<FormBuilder> {
       } else {
         AdditionalButton additionalButton = widget.additionalButtons![i];
         listAdditionalButtons.add(FilledButton.icon(
-          onPressed:
-              _isSubmittings.where((element) => element == true).isNotEmpty
+          onPressed: widget.isAddtionalButtonButtonEnable! == false
+              ? null
+              : additionalButton.isEnable! == false
                   ? null
-                  : () async {
-                      setState(() {
-                        _isSubmittings[i] = true;
-                        _isEditable = false;
-                      });
-                      await additionalButton.onTap.call(context, _inputValues);
-                      setState(() {
-                        _isSubmittings[i] = false;
-                        _isEditable = null;
-                      });
-                    },
+                  : _isSubmittings
+                          .where((element) => element == true)
+                          .isNotEmpty
+                      ? null
+                      : () async {
+                          setState(() {
+                            _isSubmittings[i] = true;
+                            _isEditable = false;
+                          });
+                          await additionalButton.onTap
+                              .call(context, _inputValues);
+                          setState(() {
+                            _isSubmittings[i] = false;
+                            _isEditable = null;
+                          });
+                        },
           label: Text(additionalButton.label),
           icon: _isSubmittings[i] == true
               ? const SizedBox(
@@ -1072,10 +1083,11 @@ class AdditionalButton {
   final Widget icon;
   final dynamic Function(
       BuildContext context, Map<String, InputValue> inputValues) onTap;
+  final bool? isEnable;
 
-  AdditionalButton({
-    required this.label,
-    required this.icon,
-    required this.onTap,
-  });
+  AdditionalButton(
+      {required this.label,
+      required this.icon,
+      required this.onTap,
+      this.isEnable = true});
 }

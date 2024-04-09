@@ -49,11 +49,8 @@ class DataDetailPage extends StatefulWidget {
 }
 
 class _DataDetailPageState extends State<DataDetailPage> {
-  late bool? _isUpdatedOrRemoved;
-
   @override
   void initState() {
-    _isUpdatedOrRemoved = null;
     super.initState();
   }
 
@@ -61,12 +58,6 @@ class _DataDetailPageState extends State<DataDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context, _isUpdatedOrRemoved);
-          },
-          icon: const Icon(Icons.arrow_back),
-        ),
         title: ListTile(
           title: Text(
             widget.title,
@@ -154,9 +145,9 @@ class _DataDetailPageState extends State<DataDetailPage> {
                 },
               );
 
-              setState(() {
-                _isUpdatedOrRemoved = true;
-              });
+              if (!context.mounted) return;
+
+              Navigator.pop(context, true);
             },
             submitButtonSettings: const SubmitButtonSettings(
               label: 'Save',

@@ -1,4 +1,4 @@
-## 0.0.7
+## 0.0.8
 
-* BugFix InputDateTime error when date time mode is date time
-* BugFix Tenent page form not scrolling
+* FormBuilder ad new property isSubmitButtonEnable and isAddtionalButtonButtonEnable
+* Change dta detail page after submit go back
