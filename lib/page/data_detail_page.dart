@@ -28,6 +28,8 @@ class DataDetailPage extends StatefulWidget {
       Map<String, InputValue> inputValues)? onValueChanged;
   final bool? isFormEditable;
   final List<AdditionalButton>? additionalButtons;
+  final bool? isSubmitButtonEnable;
+  final bool? isAddtionalButtonButtonEnable;
 
   const DataDetailPage(
       {super.key,
@@ -42,7 +44,9 @@ class DataDetailPage extends StatefulWidget {
       this.onBeforeValidation,
       this.onValueChanged,
       this.isFormEditable,
-      this.additionalButtons});
+      this.additionalButtons,
+      this.isSubmitButtonEnable,
+      this.isAddtionalButtonButtonEnable});
 
   @override
   State<DataDetailPage> createState() => _DataDetailPageState();
@@ -79,6 +83,8 @@ class _DataDetailPageState extends State<DataDetailPage> {
             onBeforeValidation: widget.onBeforeValidation,
             onValueChanged: widget.onValueChanged,
             isFormEditable: widget.isFormEditable,
+            isSubmitButtonEnable: widget.isSubmitButtonEnable,
+            isAddtionalButtonButtonEnable: widget.isAddtionalButtonButtonEnable,
             additionalButtons: [
                   AdditionalButton(
                     label: 'Delete',
