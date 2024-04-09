@@ -43,10 +43,10 @@ class DataDetailPage extends StatefulWidget {
       this.onAfterValidation,
       this.onBeforeValidation,
       this.onValueChanged,
-      this.isFormEditable,
+      this.isFormEditable = true,
       this.additionalButtons,
-      this.isSubmitButtonEnable,
-      this.isAddtionalButtonButtonEnable});
+      this.isSubmitButtonEnable = true,
+      this.isAddtionalButtonButtonEnable = true});
 
   @override
   State<DataDetailPage> createState() => _DataDetailPageState();
