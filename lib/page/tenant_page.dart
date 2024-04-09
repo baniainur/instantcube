@@ -226,58 +226,60 @@ class TenantAddPage extends StatelessWidget {
           ),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(15),
-        child: FormBuilder(
-          inputFields: const [
-            InputText(
-              name: 'name',
-              label: 'Name',
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(15),
+          child: FormBuilder(
+            inputFields: const [
+              InputText(
+                name: 'name',
+                label: 'Name',
+              ),
+              InputText(
+                name: 'detail',
+                label: 'Detail',
+                isMultilines: true,
+              ),
+              InputForm(
+                name: 'staff',
+                label: 'Staff',
+                isMultiInputForm: true,
+                isOptional: true,
+                inputFields: [
+                  InputText(
+                    name: 'name',
+                    label: 'Name',
+                  ),
+                  InputText(
+                    name: 'username',
+                    label: 'Email (Google Mail)',
+                    inputTextMode: InputTextMode.email,
+                  ),
+                ],
+              ),
+            ],
+            onSubmit: (context, inputValues) async {
+              var staff = inputValues['staff']?.getFormValues();
+
+              Tenant tenant = Tenant(
+                  name: inputValues['name']!.getString()!,
+                  detail: inputValues['detail']!.getString()!,
+                  owner: userName,
+                  staff: staff
+                      ?.map((e) =>
+                          Staff(name: e['name'], username: e['username']))
+                      .toList());
+
+              await addTenant.call(tenant);
+
+              if (!context.mounted) return;
+
+              Navigator.pop(context, true);
+            },
+            submitButtonSettings: const SubmitButtonSettings(
+              label: 'Add',
+              icon: Icon(Icons.add),
             ),
-            InputText(
-              name: 'detail',
-              label: 'Detail',
-              isMultilines: true,
-            ),
-            InputForm(
-              name: 'staff',
-              label: 'Staff',
-              isMultiInputForm: true,
-              isOptional: true,
-              inputFields: [
-                InputText(
-                  name: 'name',
-                  label: 'Name',
-                ),
-                InputText(
-                  name: 'username',
-                  label: 'Email (Google Mail)',
-                  inputTextMode: InputTextMode.email,
-                ),
-              ],
-            ),
-          ],
-          onSubmit: (context, inputValues) async {
-            var staff = inputValues['staff']?.getFormValues();
-
-            Tenant tenant = Tenant(
-                name: inputValues['name']!.getString()!,
-                detail: inputValues['detail']!.getString()!,
-                owner: userName,
-                staff: staff
-                    ?.map(
-                        (e) => Staff(name: e['name'], username: e['username']))
-                    .toList());
-
-            await addTenant.call(tenant);
-
-            if (!context.mounted) return;
-
-            Navigator.pop(context, true);
-          },
-          submitButtonSettings: const SubmitButtonSettings(
-            label: 'Add',
-            icon: Icon(Icons.add),
           ),
         ),
       ),
@@ -313,94 +315,96 @@ class TenantDetailPage extends StatelessWidget {
           ),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(15),
-        child: FormBuilder(
-          inputFields: [
-            InputText(
-              name: 'name',
-              label: '$tenantCategoryName Name',
-            ),
-            InputText(
-              name: 'detail',
-              label: '$tenantCategoryName Detail',
-              isMultilines: true,
-            ),
-            const InputForm(
-              name: 'staff',
-              label: 'Staff',
-              isMultiInputForm: true,
-              isOptional: true,
-              inputFields: [
-                InputHidden(
-                  name: 'id',
-                  label: 'ID',
-                ),
-                InputText(
-                  name: 'name',
-                  label: 'Name',
-                ),
-                InputText(
-                  name: 'username',
-                  label: 'Email (Google Mail)',
-                  inputTextMode: InputTextMode.email,
-                ),
-              ],
-            ),
-          ],
-          onInitial: (context, inputValues) {
-            inputValues['name']!.setString(tenant.name);
-            inputValues['detail']!.setString(tenant.detail);
-            if (tenant.staff != null && tenant.staff!.isNotEmpty) {
-              List<Map<String, dynamic>> value = [];
-              for (var element in tenant.staff!) {
-                value.add({
-                  'id': element.id,
-                  'name': element.name,
-                  'username': element.username
-                });
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(15),
+          child: FormBuilder(
+            inputFields: [
+              InputText(
+                name: 'name',
+                label: '$tenantCategoryName Name',
+              ),
+              InputText(
+                name: 'detail',
+                label: '$tenantCategoryName Detail',
+                isMultilines: true,
+              ),
+              const InputForm(
+                name: 'staff',
+                label: 'Staff',
+                isMultiInputForm: true,
+                isOptional: true,
+                inputFields: [
+                  InputHidden(
+                    name: 'id',
+                    label: 'ID',
+                  ),
+                  InputText(
+                    name: 'name',
+                    label: 'Name',
+                  ),
+                  InputText(
+                    name: 'username',
+                    label: 'Email (Google Mail)',
+                    inputTextMode: InputTextMode.email,
+                  ),
+                ],
+              ),
+            ],
+            onInitial: (context, inputValues) {
+              inputValues['name']!.setString(tenant.name);
+              inputValues['detail']!.setString(tenant.detail);
+              if (tenant.staff != null && tenant.staff!.isNotEmpty) {
+                List<Map<String, dynamic>> value = [];
+                for (var element in tenant.staff!) {
+                  value.add({
+                    'id': element.id,
+                    'name': element.name,
+                    'username': element.username
+                  });
+                }
+                inputValues['staff']!.setFormValues(value);
               }
-              inputValues['staff']!.setFormValues(value);
-            }
-          },
-          onSubmit: (context, inputValues) async {
-            var staff = inputValues['staff']?.getFormValues();
+            },
+            onSubmit: (context, inputValues) async {
+              var staff = inputValues['staff']?.getFormValues();
 
-            Tenant result = Tenant(
-                id: tenant.id,
-                name: inputValues['name']!.getString()!,
-                detail: inputValues['detail']!.getString()!,
-                owner: tenant.owner,
-                staff: staff
-                    ?.map((e) => Staff(
-                          id: e['id'],
-                          name: e['name'],
-                          username: e['username'],
-                        ))
-                    .toList());
-            await updateTenant.call(result);
+              Tenant result = Tenant(
+                  id: tenant.id,
+                  name: inputValues['name']!.getString()!,
+                  detail: inputValues['detail']!.getString()!,
+                  owner: tenant.owner,
+                  staff: staff
+                      ?.map((e) => Staff(
+                            id: e['id'],
+                            name: e['name'],
+                            username: e['username'],
+                          ))
+                      .toList());
+              await updateTenant.call(result);
 
-            if (!context.mounted) return;
+              if (!context.mounted) return;
 
-            Navigator.pop(context, result);
-          },
-          submitButtonSettings: const SubmitButtonSettings(
-            label: 'Save',
-            icon: Icon(Icons.save),
+              Navigator.pop(context, result);
+            },
+            submitButtonSettings: const SubmitButtonSettings(
+              label: 'Save',
+              icon: Icon(Icons.save),
+            ),
+            additionalButtons: [
+              AdditionalButton(
+                label: 'Remove',
+                icon: const Icon(Icons.remove),
+                onTap: (context, inputValues) async {
+                  await removeTenant.call(tenant);
+
+                  if (!context.mounted) return;
+
+                  Navigator.pop(context, tenant);
+                },
+              )
+            ],
           ),
-          additionalButtons: [
-            AdditionalButton(
-              label: 'Remove',
-              icon: const Icon(Icons.remove),
-              onTap: (context, inputValues) async {
-                await removeTenant.call(tenant);
-
-                if (!context.mounted) return;
-
-                Navigator.pop(context, tenant);
-              },
-            )
-          ],
         ),
       ),
     );

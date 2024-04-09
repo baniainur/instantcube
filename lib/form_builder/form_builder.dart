@@ -995,7 +995,7 @@ class InputValue {
           return DateFormat('hh:mm')
               .parse((controller as TextEditingController).text);
         } else {
-          return DateFormat('yyyy-MM-dd hh:mm:ss')
+          return DateFormat('yyyy-MM-dd hh:mm')
               .parse((controller as TextEditingController).text);
         }
       }
