@@ -9,7 +9,7 @@ class DataDetailPage extends StatefulWidget {
   final dynamic id;
   final List<Input> inputFields;
   final dynamic Function(dynamic id, Map<String, InputValue> inputValues) save;
-  final dynamic Function(dynamic id) delete;
+  final dynamic Function(BuildContext context, dynamic id) delete;
   final Function(BuildContext context, Map<String, InputValue> inputValues)?
       onInitial;
   final dynamic Function(
@@ -117,7 +117,9 @@ class _DataDetailPageState extends State<DataDetailPage> {
                       );
 
                       if (result == 'Yes') {
-                        await widget.delete.call(widget.id);
+                        if (!context.mounted) return;
+
+                        await widget.delete.call(context, widget.id);
 
                         if (!context.mounted) return;
 

@@ -1,4 +1,3 @@
-## 0.1.0
+## 0.1.1
 
-* FormBuilder ad new property isSubmitButtonEnable and isAddtionalButtonButtonEnable
-* Change data detail page after submit go back, and add new property isSubmitButtonEnable and isAddtionalButtonButtonEnable
+* Change data detail page add contect on delete method
