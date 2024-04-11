@@ -1,3 +1,3 @@
-## 0.1.2
+## 0.1.3
 
-* Change data detail page add contect on delete method
+* Owner Access Position to bottom

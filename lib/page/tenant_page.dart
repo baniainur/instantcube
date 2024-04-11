@@ -124,13 +124,14 @@ class _TenantPageState extends State<TenantPage> {
                           ];
                           ownerAccess.addAll(widget.ownerAccessMenu.call(e));
 
-                          var tenantMenu = [
+                          List<GroupItem> tenantMenu = [];
+                          tenantMenu.addAll(widget.menu.call(e));
+                          tenantMenu.add(
                             GroupItem(
                               title: 'Owner Access',
                               contents: ownerAccess,
                             ),
-                          ];
-                          tenantMenu.addAll(widget.menu.call(e));
+                          );
                           return GroupContent(
                             title: e.name,
                             subtitle: e.detail,
