@@ -260,10 +260,6 @@ class TenantAddPage extends StatelessWidget {
                 isOptional: true,
                 inputFields: [
                   InputText(
-                    name: 'name',
-                    label: 'Name',
-                  ),
-                  InputText(
                     name: 'username',
                     label: 'Email (Google Mail)',
                     inputTextMode: InputTextMode.email,
@@ -279,8 +275,10 @@ class TenantAddPage extends StatelessWidget {
                   detail: inputValues['detail']!.getString()!,
                   owner: userName,
                   staff: staff
-                      ?.map((e) =>
-                          Staff(name: e['name'], username: e['username']))
+                      ?.map((e) => Staff(
+                            username: e['username'],
+                            detail: ['detail'],
+                          ))
                       .toList());
 
               await addTenant.call(tenant);
@@ -348,18 +346,14 @@ class TenantDetailPage extends StatelessWidget {
                 isMultiInputForm: true,
                 isOptional: true,
                 inputFields: [
-                  InputHidden(
-                    name: 'id',
-                    label: 'ID',
-                  ),
-                  InputText(
-                    name: 'name',
-                    label: 'Name',
-                  ),
                   InputText(
                     name: 'username',
                     label: 'Email (Google Mail)',
                     inputTextMode: InputTextMode.email,
+                  ),
+                  InputHidden(
+                    name: 'detail',
+                    label: 'detail',
                   ),
                 ],
               ),
@@ -371,9 +365,8 @@ class TenantDetailPage extends StatelessWidget {
                 List<Map<String, dynamic>> value = [];
                 for (var element in tenant.staff!) {
                   value.add({
-                    'id': element.id,
-                    'name': element.name,
-                    'username': element.username
+                    'username': element.username,
+                    'detail': element.detail,
                   });
                 }
                 inputValues['staff']!.setFormValues(value);
@@ -389,9 +382,8 @@ class TenantDetailPage extends StatelessWidget {
                   owner: tenant.owner,
                   staff: staff
                       ?.map((e) => Staff(
-                            id: e['id'],
-                            name: e['name'],
                             username: e['username'],
+                            detail: e['detail'],
                           ))
                       .toList());
               await updateTenant.call(result);
@@ -503,9 +495,8 @@ class Tenant {
 }
 
 class Staff {
-  final dynamic id;
-  final String name;
   final String username;
+  final dynamic detail;
 
-  Staff({this.id, required this.name, required this.username});
+  Staff({required this.username, this.detail});
 }
