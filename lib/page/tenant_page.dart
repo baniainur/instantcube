@@ -73,6 +73,27 @@ class _TenantPageState extends State<TenantPage> {
             overflow: TextOverflow.ellipsis,
           ),
         ),
+        actions: [
+          IconButton(
+            onPressed: () async {
+              var result = await Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => TenantAddPage(
+                          addTenant: widget.addTenant,
+                          userName: widget.userName,
+                          tenantCategoryName: widget.tenantCategoryName,
+                        )),
+              );
+              if (result != null) {
+                setState(() {
+                  init();
+                });
+              }
+            },
+            icon: const Icon(Icons.add),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -98,97 +119,88 @@ class _TenantPageState extends State<TenantPage> {
               builder: (context, snapshot) {
                 if (snapshot.hasData &&
                     snapshot.connectionState == ConnectionState.done) {
-                  return Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      GroupItem(
-                        title: widget.tenantCategoryName,
-                        contents: snapshot.data!.map((e) {
-                          var ownerAccess = [
-                            GroupContent(
-                              title: '${widget.tenantCategoryName} Setting',
-                              subtitle: '${widget.tenantCategoryName} Setting',
-                              leading: const Icon(Icons.settings),
-                              detail: Detail(
-                                detailPage: TenantDetailPage(
-                                  tenant: e,
-                                  updateTenant: widget.updateTenant,
-                                  removeTenant: widget.removeTenant,
-                                  tenantCategoryName: widget.tenantCategoryName,
+                  if (snapshot.data!.isEmpty) {
+                    return const Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(15),
+                        child: Text(
+                          'No stores can be displayed.  If you are store staff, please contact the store owner.  If you are a store owner you can add a store by clicking the button at the top right.',
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    );
+                  } else {
+                    return Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        GroupItem(
+                          title: widget.tenantCategoryName,
+                          contents: snapshot.data!.map((e) {
+                            var ownerAccess = [
+                              GroupContent(
+                                title: '${widget.tenantCategoryName} Setting',
+                                subtitle:
+                                    '${widget.tenantCategoryName} Setting',
+                                leading: const Icon(Icons.settings),
+                                detail: Detail(
+                                  detailPage: TenantDetailPage(
+                                    tenant: e,
+                                    updateTenant: widget.updateTenant,
+                                    removeTenant: widget.removeTenant,
+                                    tenantCategoryName:
+                                        widget.tenantCategoryName,
+                                  ),
+                                  onDetailPageClosed: (result) {
+                                    Navigator.pop(context, true);
+                                  },
                                 ),
+                              ),
+                            ];
+                            ownerAccess.addAll(widget.ownerAccessMenu.call(e));
+
+                            List<GroupItem> tenantMenu = [];
+                            tenantMenu.addAll(widget.menu.call(e));
+                            tenantMenu.add(
+                              GroupItem(
+                                title: 'Owner Access',
+                                contents: ownerAccess,
+                              ),
+                            );
+                            return GroupContent(
+                              title: e.name,
+                              subtitle: e.detail,
+                              key: e.id,
+                              leading: const Icon(Icons.menu),
+                              detail: Detail(
+                                detailPage: e.owner == widget.userName
+                                    ? MenuPage(
+                                        title: _currentTenant == null
+                                            ? e.name
+                                            : _currentTenant!.name,
+                                        subtitle: _currentTenant == null
+                                            ? e.detail
+                                            : _currentTenant!.detail,
+                                        menu: tenantMenu,
+                                      )
+                                    : MenuPage(
+                                        title: e.name,
+                                        subtitle: e.detail,
+                                        menu: widget.menu.call(e),
+                                      ),
                                 onDetailPageClosed: (result) {
-                                  Navigator.pop(context, true);
+                                  if (result != null) {
+                                    setState(() {
+                                      init();
+                                    });
+                                  }
                                 },
                               ),
-                            ),
-                          ];
-                          ownerAccess.addAll(widget.ownerAccessMenu.call(e));
-
-                          List<GroupItem> tenantMenu = [];
-                          tenantMenu.addAll(widget.menu.call(e));
-                          tenantMenu.add(
-                            GroupItem(
-                              title: 'Owner Access',
-                              contents: ownerAccess,
-                            ),
-                          );
-                          return GroupContent(
-                            title: e.name,
-                            subtitle: e.detail,
-                            key: e.id,
-                            leading: const Icon(Icons.menu),
-                            detail: Detail(
-                              detailPage: e.owner == widget.userName
-                                  ? MenuPage(
-                                      title: _currentTenant == null
-                                          ? e.name
-                                          : _currentTenant!.name,
-                                      subtitle: _currentTenant == null
-                                          ? e.detail
-                                          : _currentTenant!.detail,
-                                      menu: tenantMenu,
-                                    )
-                                  : MenuPage(
-                                      title: e.name,
-                                      subtitle: e.detail,
-                                      menu: widget.menu.call(e),
-                                    ),
-                              onDetailPageClosed: (result) {
-                                if (result != null) {
-                                  setState(() {
-                                    init();
-                                  });
-                                }
-                              },
-                            ),
-                          );
-                        }).toList(),
-                      ),
-                      GroupItem(
-                        contents: [
-                          GroupContent(
-                            leading: const Icon(Icons.add),
-                            title: 'Add ${widget.tenantCategoryName}',
-                            subtitle: 'Add ${widget.tenantCategoryName}',
-                            detail: Detail(
-                              detailPage: TenantAddPage(
-                                addTenant: widget.addTenant,
-                                userName: widget.userName,
-                                tenantCategoryName: widget.tenantCategoryName,
-                              ),
-                              onDetailPageClosed: (result) {
-                                if (result != null) {
-                                  setState(() {
-                                    init();
-                                  });
-                                }
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  );
+                            );
+                          }).toList(),
+                        ),
+                      ],
+                    );
+                  }
                 } else {
                   return const LinearProgressIndicator();
                 }
