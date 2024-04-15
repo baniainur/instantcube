@@ -6,18 +6,19 @@ import 'package:url_launcher/url_launcher.dart';
 
 class UpdatePage extends StatelessWidget {
   final String storeUrl;
+  final String? additionalInfo;
 
-  const UpdatePage({super.key, required this.storeUrl});
+  const UpdatePage({super.key, required this.storeUrl, this.additionalInfo});
 
   @override
   Widget build(BuildContext context) {
     var widgets = [
-      const Expanded(
+      Expanded(
         child: Center(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
+              const Text(
                 'This app need to update.',
                 textAlign: TextAlign.center,
                 style: TextStyle(
@@ -25,6 +26,15 @@ class UpdatePage extends StatelessWidget {
                   fontSize: 14,
                 ),
               ),
+              if (additionalInfo != null)
+                Text(
+                  additionalInfo!,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    color: Colors.black87,
+                    fontSize: 12,
+                  ),
+                ),
             ],
           ),
         ),

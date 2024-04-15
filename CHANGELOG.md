@@ -1,3 +1,3 @@
-## 0.1.7
+## 0.1.8
 
-* Update Page
+* add additionalInfo property Update Page
