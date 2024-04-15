@@ -459,7 +459,7 @@ class _LoggingOutPageState extends State<LoggingOutPage> {
       body: Center(
         child: _isLoggingOut
             ? const CircularProgressIndicator()
-            : FilledButton.icon(
+            : FilledButton(
                 onPressed: () async {
                   setState(() {
                     _isLoggingOut = true;
@@ -471,8 +471,7 @@ class _LoggingOutPageState extends State<LoggingOutPage> {
 
                   Navigator.pop(context, true);
                 },
-                icon: const Icon(Icons.logout),
-                label: const Text('Logout'),
+                child: const Text('Logout'),
               ),
       ),
     );
