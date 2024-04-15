@@ -343,7 +343,7 @@ class _InputFieldOptionSearchFormPage
                       child: CircularProgressIndicator(),
                     );
                   } else if (snapshot.hasError) {
-                    return Text('Error: ${snapshot.error}');
+                    throw Exception(snapshot.error);
                   } else {
                     var optionData = snapshot.data as OptionData;
                     final displayedListOfOptions =
@@ -476,9 +476,7 @@ class _InputFieldOptionSearchResultPage
               child: CircularProgressIndicator(),
             );
           } else if (snapshot.hasError) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
+            throw Exception(snapshot.error);
           } else {
             final optionData = snapshot.data as OptionData;
             final displayedListOfOptions = optionData.displayedListOfOptions;

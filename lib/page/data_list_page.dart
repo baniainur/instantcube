@@ -30,6 +30,9 @@ class DataListPage extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting ||
               snapshot.hasError) {
+            if (snapshot.hasError) {
+              throw Exception(snapshot.error);
+            }
             return Scaffold(
               appBar: AppBar(
                 title: ListTile(
@@ -324,6 +327,9 @@ class _DataListPageShowState extends State<DataListPageShow> {
                                       if (snapshot.connectionState ==
                                               ConnectionState.waiting ||
                                           snapshot.hasError) {
+                                        if (snapshot.hasError) {
+                                          throw Exception(snapshot.error);
+                                        }
                                         return const LinearProgressIndicator();
                                       } else {
                                         return Align(
