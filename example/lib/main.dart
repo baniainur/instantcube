@@ -165,10 +165,8 @@ class ProductInventoryAddPage extends StatelessWidget {
               inputValues['priceConversion']!.setFormValues(value);
             }
           },
-          onSubmit: (context, inputValues) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Processing Data')),
-            );
+          onSubmit: (context, inputValues) async {
+            await _showMyDialog(context);
           },
           submitButtonSettings: const SubmitButtonSettings(
             label: 'Add',
@@ -176,6 +174,26 @@ class ProductInventoryAddPage extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Future<void> _showMyDialog(BuildContext context) async {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          icon: const Icon(Icons.info),
+          title: const Text('Product Inventory Added'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Ok'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }

@@ -3,7 +3,6 @@
 ```dart
 import 'package:flutter/material.dart';
 import 'package:instantcube/form_builder/form_builder.dart';
-import 'package:instantcube/form_builder/input_field_option.dart';
 
 void main() {
   runApp(const MyApp());
@@ -17,195 +16,187 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  late Future<OptionData> _futureTrainingProgramOptionData;
-  late Future<OptionData> _genderFamilyMembers;
-
   @override
   void initState() {
     super.initState();
-    _futureTrainingProgramOptionData = Future<OptionData>(
-      () {
-        List<OptionItem> data = [];
-        return OptionData(
-            displayedListOfOptions: data, totalOption: data.length);
-      },
-    );
-
-    _genderFamilyMembers = Future<OptionData>(
-      () async {
-        var data = [
-          const OptionItem(hiddenValue: ['Male'], value: ['Male']),
-          const OptionItem(hiddenValue: ['Female'], value: ['Female']),
-        ];
-        return OptionData(
-            displayedListOfOptions: data, totalOption: data.length);
-      },
-    );
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Member',
+      title: 'Add Product Inventory',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue.shade900),
         useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.orange.shade900),
+        filledButtonTheme: FilledButtonThemeData(
+          style: FilledButton.styleFrom(
+            backgroundColor: Colors.orange.shade900,
+          ),
+        ),
+        progressIndicatorTheme:
+            const ProgressIndicatorThemeData(color: Colors.deepOrange),
       ),
-      home: Scaffold(
-        body: SingleChildScrollView(
-          padding: const EdgeInsets.all(15),
-          child: FormBuilder(
-            formName: 'Member',
-            inputFields: const [
-              InputText(
-                name: 'name',
-                label: 'Name',
-              ),
-              InputForm(
-                name: 'detailProduct',
-                label: 'Detail Product',
-                inputFields: [
-                  InputNumber(
-                    name: 'quantity',
-                    label: 'Quantity',
-                  ),
-                  InputText(
-                    name: 'unit',
-                    label: 'Unit',
-                  ),
-                  InputNumber(
+      home: const ProductInventoryAddPage(),
+    );
+  }
+}
+
+class ProductInventoryAddPage extends StatelessWidget {
+  const ProductInventoryAddPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Add Product Inventory'),
+        leading: const Icon(Icons.arrow_back),
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(15),
+        child: FormBuilder(
+          inputFields: const [
+            InputText(name: 'name', label: 'Name'),
+            InputForm(
+              name: 'detailProduct',
+              label: 'Detail Product',
+              inputFields: [
+                InputNumber(name: 'quantity', label: 'Quantity'),
+                InputText(name: 'unit', label: 'Unit'),
+                InputNumber(
                     name: 'purchasePrice',
                     label: 'Purchase Price',
-                  ),
-                  InputNumber(
+                    isCurrency: true),
+                InputNumber(
                     name: 'sellingPrice',
                     label: 'Selling Price',
-                  ),
-                  InputNumber(
-                    name: 'tax',
-                    label: 'Tax',
-                  ),
-                ],
-              ),
-              InputForm(
-                name: 'unitConversion',
-                label: 'Unit Conversion',
-                isMultiInputForm: true,
-                isOptional: true,
-                inputFields: [
-                  InputNumber(
-                    name: 'quantity',
-                    label: 'Quantity',
-                  ),
-                  InputText(
-                    name: 'unit',
-                    label: 'Unit',
-                  ),
-                ],
-              ),
-              InputForm(
-                name: 'priceConversion',
-                label: 'Price Conversion',
-                isMultiInputForm: true,
-                isOptional: true,
-                inputFields: [
-                  InputText(
-                    name: 'unit',
-                    label: 'Unit',
-                    isEditable: false,
-                  ),
-                  InputNumber(
+                    isCurrency: true),
+              ],
+            ),
+            InputForm(
+              name: 'unitConversion',
+              label: 'Unit Conversion',
+              isMultiInputForm: true,
+              isOptional: true,
+              inputFields: [
+                InputNumber(name: 'quantity', label: 'Quantity'),
+                InputText(name: 'unit', label: 'Unit'),
+              ],
+            ),
+            InputForm(
+              name: 'priceConversion',
+              label: 'Price Conversion',
+              isMultiInputForm: true,
+              isOptional: true,
+              isItemCanAddedOeRemoved: false,
+              inputFields: [
+                InputText(name: 'unit', label: 'Unit', isEditable: false),
+                InputNumber(
                     name: 'purchasePricePerUnit',
                     label: 'Purchase Price Per Unit',
-                  ),
-                  InputNumber(
+                    isCurrency: true),
+                InputNumber(
                     name: 'sellingPricePerUnit',
                     label: 'Selling Price Per Unit',
-                  ),
-                  InputNumber(
-                    name: 'taxPerUnit',
-                    label: 'Tax Per Unit',
-                  ),
-                ],
-              ),
-            ],
-            onInitial: (context, inputValues) async {
-              inputValues['name']!.setString('A');
-              inputValues['detailProduct']!.setFormValues([
-                {
-                  'unit': 'Karton',
-                  'quantity': 1,
-                  'purchasePrice': 100000,
-                  'sellingPrice': 200000,
-                  'tax': 20000,
-                },
-              ]);
-              await Future.delayed(const Duration(seconds: 2));
-              List<Map<String, dynamic>> unitConversion = [];
-              List<Map<String, dynamic>> priceConversion = [];
-              unitConversion.add({
-                'quantity': 1,
-                'unit': 'Karton',
-              });
-              priceConversion.add({
-                'unit': 'Karton',
-                'purchasePricePerUnit': 100000,
-                'sellingPricePerUnit': 200000,
-                'taxPerUnit': 200000,
-              });
-              inputValues['unitConversion']!.setFormValues(unitConversion);
-              inputValues['priceConversion']!.setFormValues(priceConversion);
-            },
-            onBeforeValidation: (context, inputValues) {
-              inputValues['name']!
-                  .setString(inputValues['name']!.getString()?.toUpperCase());
-            },
-            onAfterValidation: (context, inputValues, isValid, errorMessages) {
-              if (inputValues['rate']!.getNumber() != null &&
-                  inputValues['rateInfo']!.getString() == null) {
-                errorMessages['rateInfo'] =
-                    'Must be filled because rate is filled';
-              }
-            },
-            onSubmit: (context, inputValues) {
-              var result =
-                  inputValues['familyMembers']!.getFormValues().first['name']!;
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Processing Data $result')),
-              );
-            },
-            submitButtonSettings: const SubmitButtonSettings(
-              label: 'Add Member',
-              icon: Icon(Icons.add),
+                    isCurrency: true),
+              ],
             ),
-            additionalButtons: [
-              AdditionalButton(
-                onTap: (context, inputValues) async {
-                  await Future.delayed(const Duration(seconds: 2));
-                  inputValues['name']!.setString(null);
-                },
-                label: 'Reset',
-                icon: const Icon(Icons.undo),
-              ),
-              AdditionalButton(
-                onTap: (context, inputValues) async {
-                  await Future.delayed(const Duration(seconds: 2));
-                },
-                label: 'Cancel',
-                icon: const Icon(Icons.cancel),
-              ),
-              AdditionalButton(
-                onTap: (context, inputValues) async {
-                  await Future.delayed(const Duration(seconds: 2));
-                },
-                label: 'Back',
-                icon: const Icon(Icons.arrow_back),
-              ),
-            ],
+            InputText(
+                name: 'notes',
+                label: 'Notes',
+                isMultilines: true,
+                isOptional: true),
+          ],
+          onValueChanged:
+              (context, input, previousValue, currentValue, inputValues) {
+            if ((input.name == 'detailProduct' ||
+                    input.name == 'unitConversion') &&
+                inputValues['detailProduct']!.getFormValues().isNotEmpty) {
+              var mainQuantity = inputValues['detailProduct']!
+                  .getFormValues()
+                  .first['quantity'];
+              var mainUnit =
+                  inputValues['detailProduct']!.getFormValues().first['unit'];
+              var mainPurchasePrice = inputValues['detailProduct']!
+                  .getFormValues()
+                  .first['purchasePrice'];
+              var mainSellingPrice = inputValues['detailProduct']!
+                  .getFormValues()
+                  .first['sellingPrice'];
+              var unitConversionValues =
+                  inputValues['unitConversion']!.getFormValues();
+              if (unitConversionValues.isEmpty) {
+                unitConversionValues = [
+                  {
+                    'quantity': mainQuantity,
+                    'unit': mainUnit,
+                  },
+                ];
+              } else {
+                if (unitConversionValues
+                    .where((element) => element['unit'] == mainUnit)
+                    .isNotEmpty) {
+                  unitConversionValues = unitConversionValues
+                      .map((e) => e['unit'] == mainUnit
+                          ? {
+                              'quantity': mainQuantity,
+                              'unit': mainUnit,
+                            }
+                          : e)
+                      .toList();
+                } else {
+                  unitConversionValues.add({
+                    'quantity': mainQuantity,
+                    'unit': mainUnit,
+                  });
+                }
+              }
+              inputValues['unitConversion']!
+                  .setFormValues(unitConversionValues);
+
+              List<Map<String, dynamic>> value = [];
+              for (var element
+                  in inputValues['unitConversion']!.getFormValues()) {
+                var unitConversion = element['quantity'];
+                var unit = element['unit'];
+                value.add({
+                  'unit': unit,
+                  'purchasePricePerUnit': mainPurchasePrice / unitConversion,
+                  'sellingPricePerUnit': mainSellingPrice / unitConversion,
+                });
+              }
+              inputValues['priceConversion']!.setFormValues(value);
+            }
+          },
+          onSubmit: (context, inputValues) async {
+            await _showMyDialog(context);
+          },
+          submitButtonSettings: const SubmitButtonSettings(
+            label: 'Add',
+            icon: Icon(Icons.add),
           ),
         ),
       ),
+    );
+  }
+
+  Future<void> _showMyDialog(BuildContext context) async {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          icon: const Icon(Icons.info),
+          title: const Text('Product Inventory Added'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Ok'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }

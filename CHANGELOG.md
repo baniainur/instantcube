@@ -1,3 +1,4 @@
-## 0.1.8
+## 0.1.9
 
-* add additionalInfo property Update Page
+* Bugs Fix (InputForm, InputOption, DataDetailPage)
+* Change (Example)
