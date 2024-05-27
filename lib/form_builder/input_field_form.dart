@@ -164,18 +164,22 @@ class _InputFieldFormState extends State<InputFieldForm> {
                                                         } else if (e
                                                                 .runtimeType ==
                                                             InputNumber) {
+                                                          double? value;
+                                                          var v = widget
+                                                              .controller
+                                                              .getData()[index]
+                                                              .entries
+                                                              .where((element) =>
+                                                                  element.key ==
+                                                                  e.name)
+                                                              .firstOrNull
+                                                              ?.value;
+                                                          if (v != null) {
+                                                            value = double.parse(
+                                                                v.toString());
+                                                          }
                                                           inputValues[e.name]!
-                                                              .setNumber(widget
-                                                                  .controller
-                                                                  .getData()[
-                                                                      index]
-                                                                  .entries
-                                                                  .where((element) =>
-                                                                      element
-                                                                          .key ==
-                                                                      e.name)
-                                                                  .firstOrNull
-                                                                  ?.value);
+                                                              .setNumber(value);
                                                         } else if (e
                                                                 .runtimeType ==
                                                             InputOption) {
@@ -660,19 +664,24 @@ class _InputFieldFormState extends State<InputFieldForm> {
                                                         ?.value);
                                               } else if (e.runtimeType ==
                                                   InputNumber) {
-                                                inputValues[e.name]!.setNumber(
-                                                    widget.controller
-                                                        .getData()[index]
-                                                        .entries
-                                                        .where((element) =>
-                                                            element.key ==
-                                                            e.name)
-                                                        .firstOrNull
-                                                        ?.value);
+                                                double? value;
+                                                var v = widget.controller
+                                                    .getData()[index]
+                                                    .entries
+                                                    .where((element) =>
+                                                        element.key == e.name)
+                                                    .firstOrNull
+                                                    ?.value;
+                                                if (v != null) {
+                                                  value = double.parse(
+                                                      v.toString());
+                                                }
+                                                inputValues[e.name]!
+                                                    .setNumber(value);
                                               } else if (e.runtimeType ==
                                                   InputOption) {
                                                 inputValues[e.name]!
-                                                    .setListOptionValues(widget
+                                                    .setListOptionValues((widget
                                                             .controller
                                                             .getData()[index]
                                                             .entries
@@ -681,20 +690,24 @@ class _InputFieldFormState extends State<InputFieldForm> {
                                                                 e.name)
                                                             .firstOrNull
                                                             ?.value ??
-                                                        []);
+                                                        []) as List<OptionItem>);
                                               } else if (e.runtimeType ==
                                                   InputForm) {
                                                 inputValues[e.name]!
-                                                    .setFormValues(widget
-                                                            .controller
-                                                            .getData()[index]
-                                                            .entries
-                                                            .where((element) =>
-                                                                element.key ==
-                                                                e.name)
-                                                            .firstOrNull
-                                                            ?.value ??
-                                                        []);
+                                                    .setFormValues((widget
+                                                                .controller
+                                                                .getData()[index]
+                                                                .entries
+                                                                .where((element) =>
+                                                                    element
+                                                                        .key ==
+                                                                    e.name)
+                                                                .firstOrNull
+                                                                ?.value ??
+                                                            [])
+                                                        as List<
+                                                            Map<String,
+                                                                dynamic>>);
                                               } else if (e.runtimeType ==
                                                   InputHidden) {
                                                 inputValues[e.name]!

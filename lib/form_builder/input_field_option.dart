@@ -339,9 +339,7 @@ class _InputFieldOptionSearchFormPage
                 future: widget.optionData,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
+                    return const LinearProgressIndicator();
                   } else if (snapshot.hasError) {
                     throw Exception(snapshot.error);
                   } else {
@@ -356,7 +354,7 @@ class _InputFieldOptionSearchFormPage
                           height: 15,
                         ),
                         Text(
-                            'Show ${displayedListOfOptions.length} of $totalOption Options.'),
+                            'Show ${displayedListOfOptions.length} of $totalOption ${widget.title}.'),
                         ListView.separated(
                           padding: const EdgeInsets.all(0),
                           shrinkWrap: true,
@@ -472,9 +470,7 @@ class _InputFieldOptionSearchResultPage
         future: widget.searchProcess!.call(widget.searchParameters),
         builder: (context, AsyncSnapshot<OptionData> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
+            return const LinearProgressIndicator();
           } else if (snapshot.hasError) {
             throw Exception(snapshot.error);
           } else {
@@ -485,7 +481,7 @@ class _InputFieldOptionSearchResultPage
             if (displayedListOfOptions.isEmpty) {
               return const Center(
                 child: Text(
-                  'Option not found',
+                  'Data not found',
                   style: TextStyle(
                     color: Colors.black87,
                   ),
@@ -503,7 +499,7 @@ class _InputFieldOptionSearchResultPage
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                      'Found ${displayedListOfOptions.length} of $totalOption Options.'),
+                      'Found ${displayedListOfOptions.length} of $totalOption ${widget.title}.'),
                   ListView.separated(
                     padding: const EdgeInsets.all(0),
                     shrinkWrap: true,

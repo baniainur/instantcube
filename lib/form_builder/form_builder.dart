@@ -331,6 +331,9 @@ class _FormBuilderState extends State<FormBuilder> {
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const LinearProgressIndicator();
+              }
+              if (snapshot.hasError) {
+                throw Exception(snapshot.error);
               } else {
                 return form;
               }

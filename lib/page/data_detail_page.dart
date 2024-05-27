@@ -1,7 +1,8 @@
 library instantcube;
 
 import 'package:flutter/material.dart';
-import 'package:instantcube/form_builder/form_builder.dart';
+
+import '../form_builder/form_builder.dart';
 
 class DataDetailPage extends StatefulWidget {
   final String title;
